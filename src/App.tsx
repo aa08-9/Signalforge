@@ -77,16 +77,21 @@ export default function App() {
     setEmailInput('');
   };
 
-  const executeAutonomousAiPass = () => {
+  const executeAutonomousAiPass = async () => {
     setIsProcessing(true);
     setMessage('Prompting internal processing core configuration algorithms...');
-    setTimeout(() => {
+    
+    try {
+      // Simulate API call without blocking
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       const globalTrends = [
         { topic: 'Predictive SaaS Analytics', cat: 'SaaS', score: 98, keywords: ['predictive analytics', 'saas optimization', 'data tools'] },
         { topic: 'Autonomous Workspace Engineering', cat: 'Automation', score: 95, keywords: ['autonomous workflows', 'ai workspace', 'efficiency'] },
         { topic: 'Decentralized Data Architectures', cat: 'Technology', score: 91, keywords: ['data architecture', 'scalability', 'cloud systems'] },
         { topic: 'Hyper-Scale Pattern Recognition', cat: 'Algorithms', score: 99, keywords: ['pattern mining', 'neural search', 'seo scaling'] }
       ];
+      
       const selectedTrend = globalTrends[Math.floor(Math.random() * globalTrends.length)];
       const newArticle: Article = {
         id: Math.random().toString(),
@@ -97,10 +102,14 @@ export default function App() {
         trendScore: selectedTrend.score,
         createdAt: new Date().toISOString()
       };
+      
       setArticles(prev => [newArticle, ...prev]);
       setMessage('Success! New AI Blog Post generated and posted into website.');
+    } catch (error) {
+      setMessage('Error during AI prompt execution: ' + (error as Error).message);
+    } finally {
       setIsProcessing(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -140,7 +149,7 @@ export default function App() {
               <button 
                 onClick={executeAutonomousAiPass}
                 disabled={isProcessing}
-                className="bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-semibold text-xs px-4 py-2.5 rounded-lg shadow-md transition-all uppercase tracking-wider disabled:opacity-50"
+                className="bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-semibold text-xs px-4 py-2.5 rounded-lg shadow-md transition-all uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isProcessing ? 'Prompting Engine...' : 'Force Self-Prompt Run'}
               </button>
